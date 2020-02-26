@@ -1,0 +1,2 @@
+class Vedio < Media
+end
