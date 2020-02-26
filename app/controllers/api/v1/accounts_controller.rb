@@ -1,6 +1,9 @@
 module Api
 	module V1
 		class AccountsController < ApplicationController
+
+# Create an account
+#Parameters: Email and UserName 
 		def create
 			@account = Account.new(account_params)
 			if @account.save
