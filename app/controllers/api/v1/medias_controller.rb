@@ -1,16 +1,16 @@
+require "csv"
 module Api
 	module V1
 		class MediasController < ApplicationController
 		def create
-			
-			@media = Media.new(media_params)
-			if @media.save
 
-				render json: {status: "SUCCESS", message: "Media added succesfully", data:@media},status: :ok
-			else
-				
-				render json: {status: "ERROR", message: "Failure while adding media", data:@media.errors},status: :unprocessable_entity
-			end
+			asset_id=('0'..'z').to_a.shuffle.first(8).join
+			@path= params[:csv_location]
+			@a_id= params[:account_id]
+			@data=CSV.read(@path)
+			#MetadataWorker.perform_async(@data,@a_id)
+			AddMetadataJob.perform_later(@path,@a_id,asset_id)
+			
 		end
 
 		def index
@@ -39,8 +39,7 @@ module Api
 
 		private
 		def media_params
-			asset_id=('0'..'z').to_a.shuffle.first(8).join
-			params.permit(:asset_id, :title, :duration, :file_location, :recorded_time, :account_id)
+			params.permit(:csv_location, :account_id)
 			
 		end
 		end
