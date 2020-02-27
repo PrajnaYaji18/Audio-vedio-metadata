@@ -6,12 +6,11 @@ module Api
 #Read file path from API, generate asset ID and Pass the job to AddMetadataJob
 #Input: Path to CSV file
 	  def create
-	    @asset_id = ('0'..'z').to_a.shuffle.first(8).join
 		@path = params[:csv_location]
 		@account_id = params[:account_id]
 		@data = CSV.read(@path)
-		#MetadataWorker.perform_async(@data,@a_id)
-		AddMetadataJob.perform_later(@path, @account_id, @asset_id)
+		#MetadataWorker.perform_async(@path,@account_id,@asset_id)
+		AddMetadataJob.perform_later(@path, @account_id)
 	  end
 
 #Get the account ID from the request and list all the medias persent in that account
