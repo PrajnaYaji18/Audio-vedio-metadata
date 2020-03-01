@@ -29,7 +29,7 @@ module Api
 
 	  private
 	  def media_params
-	    params.permit(:csv_location)
+	    params.permit(:media_type)
 	  end
 	end
   end

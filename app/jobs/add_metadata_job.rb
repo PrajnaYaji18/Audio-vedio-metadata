@@ -15,7 +15,7 @@ class AddMetadataJob < ApplicationJob
 	    )
 
 	   @media.timecode = @media.duration_tc(row[1])
-	   @media.save()
+	   @media.save
 	    
 	  end
   end
