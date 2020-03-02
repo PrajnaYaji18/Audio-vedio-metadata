@@ -15,8 +15,25 @@ module Api
 
 #Get the account ID from the request and list all the medias persent in that account
 	  def index
-	    @medias = Media.where(account_id: params[:account_id])
-		render json: {status: "SUCCESS", message: "Loaded successfully", data:@medias},status: :ok
+	    if params[:asset_id].present?
+	      @medias = Media.where(account_id: params[:account_id], asset_id: params[:asset_id])
+	    elsif params[:title].present?
+              @medias = Media.where(account_id: params[:account_id], title: params[:title])
+	    elsif params[:max_duration].present? and params[:min_duration].present?
+              @medias = Media.where(account_id: params[:account_id], duration: params[:min_duration].to_i..params[:max_duration].to_i)
+
+	    elsif params[:max_duration].present?
+	      @medias = Media.where(account_id: params[:account_id], duration: -Float::INFINITY..params[:max_duration].to_i)
+	    
+            elsif params[:min_duration].present?
+              @medias = Media.where(account_id: params[:account_id], duration: params[:min_duration].to_i..Float::INFINITY)
+
+	    elsif params[:sort].present? and params[:sort] == "True"
+               @medias = Media.where(account_id: params[:account_id]).order(created_at: :desc)
+	    else
+	      @medias = Media.where(account_id: params[:account_id])
+	    end	
+	    render json: {status: "SUCCESS", message: "Loaded successfully", data:@medias},status: :ok
 	  end
 
 #Get the account ID and media ID from the request and delete the media
