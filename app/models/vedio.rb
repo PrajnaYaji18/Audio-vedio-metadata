@@ -1,2 +1,0 @@
-class Vedio < Media
-end
