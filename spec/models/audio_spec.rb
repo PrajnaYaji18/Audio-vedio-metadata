@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 RSpec.describe Audio, type: :model do
   before(:all) do
@@ -5,6 +7,6 @@ RSpec.describe Audio, type: :model do
     @audio = build(:audio, account_id: @account.id)
   end
   it 'should convert miliseconds to timecode in frames' do
-    expect(@audio.duration_tc(3000)).to eq("00:00:03:0")
+    expect(@audio.duration_tc(3000)).to eq('00:00:03:0')
   end
 end
