@@ -1,11 +1,12 @@
-Rails.application.routes.draw do
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-namespace 'api' do
-	namespace 'v1' do
-		resources :accounts	do
-			resources :medias
-		end
-	end
-end
+# frozen_string_literal: true
 
+Rails.application.routes.draw do
+  apipie
+  namespace 'api' do
+    namespace 'v1' do
+      resources :accounts do
+        resources :medias
+      end
+    end
+  end
 end
