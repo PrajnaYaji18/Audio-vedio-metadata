@@ -12,7 +12,8 @@ module Api
        == Media
        This API is used to upload media using CSV file
       EOS
-      param :account_id, String, desc: 'Account Id of the media', required: true
+      param :account_id, String, desc: 'Account Id of the media',
+        required: true
       param :csv_location, String, desc: 'Location of the csv file', required: true
 
       example '/api/v1/2/medias?csv_location=/home/amagi/test.csv'
@@ -22,9 +23,9 @@ module Api
         @data = CSV.read(@path)
         # MetadataWorker.perform_async(@path,@account_id,@asset_id)
         AddMetadataJob.perform_later(@path, @account_id)
-    end
+      end
 
-      api :GET, '/accounts/:account_id/medias/', 'Filter media based on attributes'
+      api :GET, '/accounts/:account_id/medias/','Filter media based on attributes'
       description <<-EOS
        == Default condition returns all the medias.
 
@@ -40,12 +41,12 @@ module Api
           GET /api/v1/accounts/1/medias?max_duration=:max_duration&min_duration=:min_duration
           GET /api/v1/accounts/1/medias?max_duration=:max_duration
           GET /api/v1/accounts/1/medias?min_duration=:min_duration
-          max_duration and min_duration are the duration to filter the media based on its duration filed.
-	  default max_duration is INFINITY and min_duration is -INFINITY
+					max_duration and min_duration are the duration to filter the media based on its duration filed.
+	        default max_duration is INFINITY and min_duration is -INFINITY
 
       == GET media based on creation_time
          GET /api/v1/accounts/1/medias?sort="True"
-	 The order is descending
+	 			 The order is descending
       EOS
 
       param :account_id, String, desc: 'Account Id of the account', required: true
@@ -59,9 +60,9 @@ module Api
       GET v1/api/accounts/2/medias?asset_id=mrjCQ:Bl
 
       {
-    "status": "SUCCESS",
-    "message": "Loaded successfully",
-    "data": [
+    	"status": "SUCCESS",
+    	"message": "Loaded successfully",
+    	"data": [
         {
             "id": 76,
             "asset_id": "mrjCQ:Bl",
@@ -76,12 +77,12 @@ module Api
         }
 
 
-     GET /api/v1/accounts/2/medias?title=Audio
+     	GET /api/v1/accounts/2/medias?title=Audio
 
-     {
-    "status": "SUCCESS",
-    "message": "Loaded successfully",
-    "data":
+     	{
+    	"status": "SUCCESS",
+    	"message": "Loaded successfully",
+    	"data":
         {
             "id": 77,
             "asset_id": "_7]12?6v",
@@ -97,12 +98,12 @@ module Api
 	}
 
 
-	GET /api/v1/accounts/1/medias?max_duration=6000&min_duration=50000
+			GET /api/v1/accounts/1/medias?max_duration=6000&min_duration=50000
 
       {
-    "status": "SUCCESS",
-    "message": "Loaded successfully",
-    "data": [
+    	"status": "SUCCESS",
+    	"message": "Loaded successfully",
+    	"data": [
         {
             "id": 76,
             "asset_id": "mrjCQ:Bl",
@@ -133,9 +134,9 @@ module Api
       GET /api/v1/accounts/2/medias?sort=True
 
       {
-    "status": "SUCCESS",
-    "message": "Loaded successfully",
-    "data": [
+    	"status": "SUCCESS",
+    	"message": "Loaded successfully",
+    	"data": [
         {
             "id": 82,
             "asset_id": "q;UpPIxC",
@@ -208,7 +209,7 @@ module Api
             "duration": 3000,
             "title": "Audio"
         }
-   ]}
+   		]}
      '
       def index
         if params[:asset_id].present?
@@ -216,21 +217,21 @@ module Api
         elsif params[:title].present?
           @medias = Media.where(account_id: params[:account_id], title: params[:title])
         elsif params[:max_duration].present? && params[:min_duration].present?
-          @medias = Media.where(account_id: params[:account_id], duration: params[:min_duration].to_i..params[:max_duration].to_i)
-
-        elsif params[:max_duration].present?
-          @medias = Media.where(account_id: params[:account_id], duration: -Float::INFINITY..params[:max_duration].to_i)
-
-        elsif params[:min_duration].present?
-          @medias = Media.where(account_id: params[:account_id], duration: params[:min_duration].to_i..Float::INFINITY)
-
-        elsif params[:sort].present? && (params[:sort] == 'True')
+					@medias = Media.where(account_id: params[:account_id], 
+                               duration: params[:min_duration].to_i..params[:max_duration].to_i)
+				elsif params[:max_duration].present?
+          @medias = Media.where(account_id: params[:account_id]i,
+                                duration: -Float::INFINITY..params[:max_duration].to_i)
+			  elsif params[:min_duration].present?
+          @medias = Media.where(account_id: params[:account_id],
+                                duration: params[:min_duration].to_i..Float::INFINITY)
+				elsif params[:sort].present? && (params[:sort] == 'True')
           @medias = Media.where(account_id: params[:account_id]).order(created_at: :desc)
         else
           @medias = Media.where(account_id: params[:account_id])
         end
-        render json: { status: 'SUCCESS', message: 'Loaded successfully', data: @medias }, status: :ok
-    end
+				render json: { status: 'SUCCESS', message: 'Loaded successfully', data: @medias }, status: :ok
+    	end
 
       api :DELETE, '/accounts/:account_id/medias/:id', 'Delete Media'
       description <<-EOS
@@ -243,12 +244,12 @@ module Api
       param :id, String, desc: 'Id of the media', required: true
 
       example '
-       DELETE /api/v1/accounts/2/medias/76
+      DELETE /api/v1/accounts/2/medias/76
 
       {
-    "status": "SUCCESS",
-    "message": "Deleted successfully",
-    "data": {
+    	"status": "SUCCESS",
+    	"message": "Deleted successfully",
+    	"data": {
         "id": 76,
         "asset_id": "mrjCQ:Bl",
         "account_id": 2,
@@ -260,7 +261,7 @@ module Api
         "duration": 50050,
         "title": "Video"
     }
-}
+		}
      '
 
       def destroy
@@ -269,11 +270,10 @@ module Api
         render json: { status: 'SUCCESS', message: 'Deleted successfully', data: @media }, status: :ok
       end
 
-    private
-
-      def media_params
-        params.permit(:media_type)
-      end
+		private
+		def media_params
+      params.permit(:media_type)
+    end
   end
-  end
+end
 end
