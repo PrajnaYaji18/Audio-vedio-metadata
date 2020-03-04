@@ -34,19 +34,19 @@ module Api
           Asset id is an user editable field, it is a string which is unique for each media
 
        == GET media by title
-       	  GET /api/v1/accounts/1/medias?title=:title
+           GET /api/v1/accounts/1/medias?title=:title
           Title is an user editable field, it describes the title of the vedio
 
        == GET media by duration
           GET /api/v1/accounts/1/medias?max_duration=:max_duration&min_duration=:min_duration
           GET /api/v1/accounts/1/medias?max_duration=:max_duration
           GET /api/v1/accounts/1/medias?min_duration=:min_duration
-					max_duration and min_duration are the duration to filter the media based on its duration filed.
-	        default max_duration is INFINITY and min_duration is -INFINITY
+          max_duration and min_duration are the duration to filter the media based on its duration filed.
+          default max_duration is INFINITY and min_duration is -INFINITY
 
       == GET media based on creation_time
          GET /api/v1/accounts/1/medias?sort="True"
-	 			 The order is descending
+          The order is descending
       EOS
 
       param :account_id, String, desc: 'Account Id of the account', required: true
@@ -60,9 +60,9 @@ module Api
       GET v1/api/accounts/2/medias?asset_id=mrjCQ:Bl
 
       {
-    	"status": "SUCCESS",
-    	"message": "Loaded successfully",
-    	"data": [
+      "status": "SUCCESS",
+      "message": "Loaded successfully",
+      "data": [
         {
             "id": 76,
             "asset_id": "mrjCQ:Bl",
@@ -77,12 +77,12 @@ module Api
         }
 
 
-     	GET /api/v1/accounts/2/medias?title=Audio
+       GET /api/v1/accounts/2/medias?title=Audio
 
-     	{
-    	"status": "SUCCESS",
-    	"message": "Loaded successfully",
-    	"data":
+       {
+      "status": "SUCCESS",
+      "message": "Loaded successfully",
+      "data":
         {
             "id": 77,
             "asset_id": "_7]12?6v",
@@ -95,15 +95,15 @@ module Api
             "duration": 3000,
             "title": "Audio"
         }
-	}
+  }
 
 
-			GET /api/v1/accounts/1/medias?max_duration=6000&min_duration=50000
+      GET /api/v1/accounts/1/medias?max_duration=6000&min_duration=50000
 
       {
-    	"status": "SUCCESS",
-    	"message": "Loaded successfully",
-    	"data": [
+      "status": "SUCCESS",
+      "message": "Loaded successfully",
+      "data": [
         {
             "id": 76,
             "asset_id": "mrjCQ:Bl",
@@ -134,9 +134,9 @@ module Api
       GET /api/v1/accounts/2/medias?sort=True
 
       {
-    	"status": "SUCCESS",
-    	"message": "Loaded successfully",
-    	"data": [
+      "status": "SUCCESS",
+      "message": "Loaded successfully",
+      "data": [
         {
             "id": 82,
             "asset_id": "q;UpPIxC",
@@ -209,7 +209,7 @@ module Api
             "duration": 3000,
             "title": "Audio"
         }
-   		]}
+       ]}
      '
       def index
         @medias = Media.where(account_id: params[:account_id], 
@@ -217,9 +217,9 @@ module Api
                               title: params[:title], 
                               duration: params[:min_duration].to_i..params[:max_duration].to_i)
         if params[:sort == 'True')
-          @medias = @medias.order(created_at: :asec)
-				render json: { status: 'SUCCESS', message: 'Loaded successfully', data: @medias }, status: :ok
-    	end
+          @medias = @medias.order(created_at: :desc)
+        render json: { status: 'SUCCESS', message: 'Loaded successfully', data: @medias }, status: :ok
+      end
  
       api :DELETE, '/accounts/:account_id/medias/:id', 'Delete Media'
       description <<-EOS
@@ -235,9 +235,9 @@ module Api
       DELETE /api/v1/accounts/2/medias/76
 
       {
-    	"status": "SUCCESS",
-    	"message": "Deleted successfully",
-    	"data": {
+https://github.com/PrajnaYaji18/Audio-vedio-metadata/pull/7/commits/9851b6b681f663809431f4a7179c86456bb46610      "status": "SUCCESS",
+      "message": "Deleted successfully",
+      "data": {
         "id": 76,
         "asset_id": "mrjCQ:Bl",
         "account_id": 2,
@@ -249,7 +249,7 @@ module Api
         "duration": 50050,
         "title": "Video"
     }
-		}
+    }
      '
 
       def destroy
@@ -258,10 +258,10 @@ module Api
         render json: { status: 'SUCCESS', message: 'Deleted successfully', data: @media }, status: :ok
       end
 
-			private
-			def media_params
-      	params.permit(:media_type)
-    	end
-  	end
-	end
+      private
+      def media_params
+        params.permit(:media_type)
+      end
+    end
+  end
 end
