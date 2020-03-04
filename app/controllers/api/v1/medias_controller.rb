@@ -212,13 +212,14 @@ module Api
        ]}
      '
       def index
-        @medias = Media.where(account_id: params[:account_id], 
-                              asset_id: params[:asset_id], 
-                              title: params[:title], 
-                              duration: params[:min_duration].to_i..params[:max_duration].to_i)
-        if params[:sort == 'True')
-          @medias = @medias.order(created_at: :desc)
-        render json: { status: 'SUCCESS', message: 'Loaded successfully', data: @medias }, status: :ok
+        medias = Media.where(account_id: params[:account_id])
+        #@artists = Artist.where("name RLIKE ?", "^#{filter_letter}")
+        medias = medias.where("asset_id RLIKE ?", "#{params[:asset_id]}") if params[:asset_id].present?
+        medias = medias.where("title RLIKE ?", "#{params[:title]}") if params[:title].present?
+        medias = medias.where(duration: -Float::INFINITY..params[:max_duration].to_i) if params[:max_duration].present?
+        medias = medias.where(duration: params[:min_duration].to_i..Float::INFINITY) if params[:min_duration].present?
+        medias = medias.order(created_at: :desc) if params[:sort].present? and params[:sort]=="True"
+        render json: { status: 'SUCCESS', message: 'Loaded successfully', data: medias }, status: :ok
       end
  
       api :DELETE, '/accounts/:account_id/medias/:id', 'Delete Media'
