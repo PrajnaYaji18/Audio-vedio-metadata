@@ -212,6 +212,7 @@ module Api
        ]}
      '
       def index
+        offset = 0
         medias = Media.where(account_id: params[:account_id])
         #@artists = Artist.where("name RLIKE ?", "^#{filter_letter}")
         medias = medias.where("asset_id RLIKE ?", "#{params[:asset_id]}") if params[:asset_id].present?
@@ -219,6 +220,8 @@ module Api
         medias = medias.where(duration: -Float::INFINITY..params[:max_duration].to_i) if params[:max_duration].present?
         medias = medias.where(duration: params[:min_duration].to_i..Float::INFINITY) if params[:min_duration].present?
         medias = medias.order(created_at: :desc) if params[:sort].present? and params[:sort]=="True"
+        offset = params[:offset] if params[:offset].present?
+        medias = medias.limit(params[:limit]).offset(offset) if params[:limit].present?
         render json: { status: 'SUCCESS', message: 'Loaded successfully', data: medias }, status: :ok
       end
  
