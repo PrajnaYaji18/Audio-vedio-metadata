@@ -212,27 +212,15 @@ module Api
    		]}
      '
       def index
-        if params[:asset_id].present?
-          @medias = Media.where(account_id: params[:account_id], asset_id: params[:asset_id])
-        elsif params[:title].present?
-          @medias = Media.where(account_id: params[:account_id], title: params[:title])
-        elsif params[:max_duration].present? && params[:min_duration].present?
-					@medias = Media.where(account_id: params[:account_id], 
-                               duration: params[:min_duration].to_i..params[:max_duration].to_i)
-				elsif params[:max_duration].present?
-          @medias = Media.where(account_id: params[:account_id]i,
-                                duration: -Float::INFINITY..params[:max_duration].to_i)
-			  elsif params[:min_duration].present?
-          @medias = Media.where(account_id: params[:account_id],
-                                duration: params[:min_duration].to_i..Float::INFINITY)
-				elsif params[:sort].present? && (params[:sort] == 'True')
-          @medias = Media.where(account_id: params[:account_id]).order(created_at: :desc)
-        else
-          @medias = Media.where(account_id: params[:account_id])
-        end
+        @medias = Media.where(account_id: params[:account_id], 
+                              asset_id: params[:asset_id], 
+                              title: params[:title], 
+                              duration: params[:min_duration].to_i..params[:max_duration].to_i)
+        if params[:sort == 'True')
+          @medias = @medias.order(created_at: :asec)
 				render json: { status: 'SUCCESS', message: 'Loaded successfully', data: @medias }, status: :ok
     	end
-
+ 
       api :DELETE, '/accounts/:account_id/medias/:id', 'Delete Media'
       description <<-EOS
       == Delete Media
@@ -270,10 +258,10 @@ module Api
         render json: { status: 'SUCCESS', message: 'Deleted successfully', data: @media }, status: :ok
       end
 
-		private
-		def media_params
-      params.permit(:media_type)
-    end
-  end
-end
+			private
+			def media_params
+      	params.permit(:media_type)
+    	end
+  	end
+	end
 end
