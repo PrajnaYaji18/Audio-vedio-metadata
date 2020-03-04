@@ -214,8 +214,8 @@ module Api
       def index
         medias = Media.where(account_id: params[:account_id])
         #@artists = Artist.where("name RLIKE ?", "^#{filter_letter}")
-        medias = medias.where("asset_id RLIKE ?", "#{params[:asset_id]}") if params[:asset_id].present?
-        medias = medias.where("title RLIKE ?", "#{params[:title]}") if params[:title].present?
+        medias = medias.where("asset_id RLIKE ?", "#{Regexp.escape(params[:asset_id])}") if params[:asset_id].present?
+        medias = medias.where("title RLIKE ?", "#{Regexp.escape(params[:title])}") if params[:title].present?
         medias = medias.where(duration: -Float::INFINITY..params[:max_duration].to_i) if params[:max_duration].present?
         medias = medias.where(duration: params[:min_duration].to_i..Float::INFINITY) if params[:min_duration].present?
         medias = medias.order(created_at: :desc) if params[:sort].present? and params[:sort]=="True"
