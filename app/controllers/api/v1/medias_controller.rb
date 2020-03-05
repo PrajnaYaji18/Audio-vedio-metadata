@@ -52,8 +52,8 @@ module Api
       param :account_id, String, desc: 'Account Id of the account', required: true
       param :asset_id, String, desc: 'asset ID of the media', required: false
       param :title, String, desc: 'Title of the media', required: false
-      param :max_duration, Integer, desc: 'Maximum duration to filter the media based on duration', required: false
-      param :min_duration, Integer, desc: 'Minimum duration to filter the media based on duration', required: false
+      param :max_duration, :number, desc: 'Maximum duration to filter the media based on duration', required: false
+      param :min_duration, :number, desc: 'Minimum duration to filter the media based on duration', required: false
       param :sort, String, desc: ' sort (True, False) Sorting the data based on creation time in descending order', required: false
 
       example '

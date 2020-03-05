@@ -8,7 +8,7 @@ FactoryBot.define do
     file_location 'file_location'
     account_id '2'
     recorded_time '2018-10-19 15:43:20'
-    media_type 'audio'
+    media_type 'Audio'
     timecode 'timecode'
   end
 
@@ -24,7 +24,7 @@ FactoryBot.define do
     file_location 'file_location'
     account_id '2'
     recorded_time '2018-10-19 15:43:20'
-    media_type 'video'
+    media_type 'Video'
     timecode 'timecode'
   end
 end
