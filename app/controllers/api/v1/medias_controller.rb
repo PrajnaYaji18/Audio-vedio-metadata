@@ -47,6 +47,10 @@ module Api
       == GET media based on creation_time
          GET /api/v1/accounts/1/medias?sort="True"
           The order is descending
+
+      == GET media based on offset and limit
+         Default value of offset is 0
+         GET /api/v1/accounts/1/medias?offset=:offset&limit=:limit
       EOS
 
       param :account_id, String, desc: 'Account Id of the account', required: true
@@ -55,7 +59,8 @@ module Api
       param :max_duration, :number, desc: 'Maximum duration to filter the media based on duration', required: false
       param :min_duration, :number, desc: 'Minimum duration to filter the media based on duration', required: false
       param :sort, String, desc: ' sort (True, False) Sorting the data based on creation time in descending order', required: false
-
+      param :offset :number, desc: 'Number of rows need to be skipped while retrieve the data', required: false
+      param :limit :number, desc: 'Number of rows need to be fetched'
       example '
       GET v1/api/accounts/2/medias?asset_id=mrjCQ:Bl
 
