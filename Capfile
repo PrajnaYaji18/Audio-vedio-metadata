@@ -33,7 +33,7 @@ install_plugin Capistrano::SCM::Git
 # require "capistrano/rails/assets"
 # require "capistrano/rails/migrations"
 # require "capistrano/passenger"
-require 'capistrano/rails'
+require 'capistrano/rails/migrations'
 require 'capistrano/bundler'
 require 'capistrano/rvm'
 require 'capistrano/puma'
