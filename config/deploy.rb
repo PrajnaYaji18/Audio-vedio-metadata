@@ -23,6 +23,7 @@ set :puma_preload_app, true
 set :puma_worker_timeout, nil
 set :puma_init_active_record, true  # Change to false when not using ActiveRecord
 set :ssh_options, {
+  user: fetch(:user),
   forward_agent: true,
   auth_methods: %w[publickey],
   keys: %w[/home/amagi/Downloads/prajna.pem]
@@ -82,7 +83,7 @@ namespace :deploy do
   after  :finishing,    :cleanup
   after  :finishing,    :restart
 end
-
+set :branch, ENV['BRANCH'] if ENV['BRANCH']
 # ps aux | grep puma    # Get puma pid
 # kill -s SIGUSR2 pid   # Restart puma
 # kill -s SIGTERM pid   # Stop puma
