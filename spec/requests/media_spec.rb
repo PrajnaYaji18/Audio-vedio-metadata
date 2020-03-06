@@ -6,7 +6,6 @@ RSpec.describe Media, type: :request do
     create(:video, account_id: @account.id, duration: 50500, asset_id: "ABC34#", title: "Video1")
     create(:video, account_id: @account.id, duration: 5000, asset_id: "afg$#e", title: "Video2")
     create(:audio, account_id: @account.id, duration: 60000, asset_id: "123rt@s", title: "Audio1")
-
   end
 
   it "should return media with given title" do

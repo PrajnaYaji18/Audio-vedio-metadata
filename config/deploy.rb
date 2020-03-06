@@ -1,10 +1,10 @@
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.12.0"
-server '18.217.179.149', port: 8000, roles: [:web, :app, :db], primary: true
+server '10.0.5.114', port: 80, roles: [:web, :app, :db], primary: true
 
 set :application, "AddMedia"
 set :repo_url, "https://github.com/PrajnaYaji18/Audio-vedio-metadata"
-set :user,            'ubuntu'
+set :user,            'amagi'
 set :puma_threads,    [4, 16]
 set :puma_workers,    0
 
