@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'csv'
+require 'open-uri'
 module Api
   module V1
     class MediasController < ApplicationController
@@ -19,10 +20,27 @@ module Api
       example '/api/v1/2/medias?csv_location=/home/amagi/test.csv'
       def create
         @path = params[:csv_location]
-        @account_id = params[:account_id]
-        @data = CSV.read(@path)
+        account_id = params[:account_id]
+        print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
+         CSV.new(open(@path), :headers => :first_row).each do |row|
+           asset_id = ('0'..'z').to_a.sample(8).join
+           @media = Media.new(
+             asset_id: asset_id,
+             title: row[0],
+             duration: row[1],
+             file_location: row[2],
+             recorded_time: row[3],
+             account_id: account_id,
+             media_type: row[4]
+           )
+           byebug
+           @media.timecode = @media.duration_tc(row[1])
+           byebug
+           @media.save
+           byebug
+         end
         # MetadataWorker.perform_async(@path,@account_id,@asset_id)
-        AddMetadataJob.perform_later(@path, @account_id)
+        #AddMetadataJob.perform_later(@path, @account_id)
       end
 
       api :GET, '/accounts/:account_id/medias/','Filter media based on attributes'
