@@ -33,11 +33,8 @@ module Api
              account_id: account_id,
              media_type: row[4]
            )
-           byebug
            @media.timecode = @media.duration_tc(row[1])
-           byebug
            @media.save
-           byebug
          end
         # MetadataWorker.perform_async(@path,@account_id,@asset_id)
         #AddMetadataJob.perform_later(@path, @account_id)
