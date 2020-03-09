@@ -56,11 +56,11 @@ module Api
       param :account_id, String, desc: 'Account Id of the account', required: true
       param :asset_id, String, desc: 'asset ID of the media', required: false
       param :title, String, desc: 'Title of the media', required: false
-      param :max_duration, :number, desc: 'Maximum duration to filter the media based on duration', required: false
-      param :min_duration, :number, desc: 'Minimum duration to filter the media based on duration', required: false
+      param :max_duration, String, desc: 'Maximum duration to filter the media based on duration', required: false
+      param :min_duration, String, desc: 'Minimum duration to filter the media based on duration', required: false
       param :sort, String, desc: ' sort (True, False) Sorting the data based on creation time in descending order', required: false
-      param :offset :number, desc: 'Number of rows need to be skipped while retrieve the data', required: false
-      param :limit :number, desc: 'Number of rows need to be fetched'
+      param :offset String, desc: 'Number of rows need to be skipped while retrieve the data', required: false
+      param :limit String, desc: 'Number of rows need to be fetched'
       example '
       GET v1/api/accounts/2/medias?asset_id=mrjCQ:Bl
 
