@@ -1,5 +1,4 @@
-# frozen_string_literal: true
-
+require 'aws-sdk'
 require 'csv'
 require 'open-uri'
 module Api
@@ -21,10 +20,19 @@ module Api
       def create
         @path = params[:csv_location]
         account_id = params[:account_id]
-        print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
-         CSV.new(open(@path), :headers => :first_row).each do |row|
-           asset_id = ('0'..'z').to_a.sample(8).join
-           @media = Media.new(
+        access_key_id =  ENV['AWS_ACCESS_KEY_ID'] 
+        secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
+        bucket_name = ENV['BUCKET_NAME']
+        s3 = Aws::S3::Client.new(region: 'us-east-2', access_key_id: access_key_id, secret_access_key: secret_access_key)
+        resp = s3.get_object({
+        bucket: bucket_name,
+        key: "test.csv"
+        })
+        result = resp.body.read
+        csv = CSV.parse(result, :headers => true)
+        csv.each do |row|
+          asset_id = ('0'..'z').to_a.sample(8).join
+          @media = Media.new(
              asset_id: asset_id,
              title: row[0],
              duration: row[1],
@@ -33,12 +41,10 @@ module Api
              account_id: account_id,
              media_type: row[4]
            )
-           @media.timecode = @media.duration_tc(row[1])
-           @media.save
-         end
-        # MetadataWorker.perform_async(@path,@account_id,@asset_id)
-        #AddMetadataJob.perform_later(@path, @account_id)
+          @media.timecode = @media.duration_tc(row[1])
+          @media.save
       end
+    end
 
       api :GET, '/accounts/:account_id/medias/','Filter media based on attributes'
       description <<-EOS
