@@ -23,7 +23,7 @@ set :log_level,     :debug
 set :keep_releases, 5
 
 set :linked_dirs,  %w{log tmp/pids tmp/cache}
-
+set :linked_files, %w{config/master.key}
 namespace :deploy do
 
   after  :finishing,    :cleanup
