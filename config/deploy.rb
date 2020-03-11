@@ -1,6 +1,6 @@
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.12.0"
-server '3.12.34.136', port: 22, roles: [:web, :app, :db], primary: true
+server '18.222.106.89', port: 22, roles: [:web, :app, :db], primary: true
 
 set :application, "AddMedia"
 set :repo_url, "https://github.com/PrajnaYaji18/Audio-vedio-metadata"
