@@ -19,6 +19,7 @@ module Api
       example '/api/v1/2/medias?csv_location=/home/amagi/test.csv'
       def create
         @path = params[:csv_location]
+        key = URI(@path).path.split('/').last
         account_id = params[:account_id]
         access_key_id =  ENV['AWS_ACCESS_KEY_ID'] 
         secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
@@ -26,7 +27,7 @@ module Api
         s3 = Aws::S3::Client.new(region: 'us-east-2', access_key_id: access_key_id, secret_access_key: secret_access_key)
         resp = s3.get_object({
         bucket: bucket_name,
-        key: "test.csv"
+        key: key
         })
         result = resp.body.read
         csv = CSV.parse(result, :headers => true)
