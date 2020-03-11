@@ -36,7 +36,7 @@ production: &production
   pool:  <%= ENV["DB_POOL_SIZE"] || "25" %>
   username: <%= ENV["MYSQL_USERNAME"] || "root" %>
   password: <%= ENV["MYSQL_PASSWORD"] || "welcome" %>
-  host: <%= ENV["MYSQL_HOST"] || "localhost" %>
+  host: <%= ENV["MYSQL_HOST"] || "127.0.0.1" %>
   port: <%= ENV["MYSQL_PORT"] || "3306" %>
   variables:
     sql_mode: TRADITIONAL
