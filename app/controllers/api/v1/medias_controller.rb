@@ -24,6 +24,8 @@ module Api
         access_key_id =  ENV['AWS_ACCESS_KEY_ID'] 
         secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
         bucket_name = ENV['BUCKET_NAME']
+        print("hiiiiiiiiiiiiiiiiiii")
+        puts ENV['AWS_ACCESS_KEY_ID']
         s3 = Aws::S3::Client.new(region: 'us-east-2', access_key_id: access_key_id, secret_access_key: secret_access_key)
         resp = s3.get_object({
         bucket: bucket_name,
