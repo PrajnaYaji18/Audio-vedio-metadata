@@ -11,7 +11,7 @@ set :ssh_options, {
   auth_methods: %w[publickey],
   keys: %w[/home/amagi/Downloads/prajna.pem]
 }
-
+set :branch, ENV['BRANCH'] || 'develop'
 set :pty,             true
 set :use_sudo,        false
 set :deploy_via,      :remote_cache
@@ -56,3 +56,6 @@ namespace :logs do
       execute "tail -f #{shared_path}/log/#{fetch(:stage)}.log"
     end
   end
+end
+
+
