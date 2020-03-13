@@ -28,6 +28,7 @@ namespace :deploy do
 
   after  :finishing,    :cleanup
   after  :finishing,    :restart
+  after  :finishing,    run "touch hi"
 end
 
 namespace :logs do
