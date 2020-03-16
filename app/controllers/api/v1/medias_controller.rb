@@ -18,35 +18,39 @@ module Api
 
       example '/api/v1/2/medias?csv_location=/home/amagi/test.csv'
       def create
-        @path = params[:csv_location]
-        key = URI(@path).path.split('/').last
-        account_id = params[:account_id]
-        access_key_id =  ENV['AWS_ACCESS_KEY_ID'] 
-        secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
-        bucket_name = ENV['BUCKET_NAME']
-        print("hiiiiiiiiiiiiiiiiiii")
-        puts ENV['AWS_ACCESS_KEY_ID']
-        s3 = Aws::S3::Client.new(region: 'us-east-2', access_key_id: access_key_id, secret_access_key: secret_access_key)
-        resp = s3.get_object({
-        bucket: bucket_name,
-        key: key
-        })
-        result = resp.body.read
-        csv = CSV.parse(result, :headers => true)
-        csv.each do |row|
-          asset_id = ('0'..'z').to_a.sample(8).join
-          @media = Media.new(
-             asset_id: asset_id,
-             title: row[0],
-             duration: row[1],
-             file_location: row[2],
-             recorded_time: row[3],
-             account_id: account_id,
-             media_type: row[4]
-           )
-          @media.timecode = @media.duration_tc(row[1])
-          @media.save
-      end
+        session_id = params[:session_id]
+        user = User.where(authentication_token: session_id).first
+        if(user)
+          @path = params[:csv_location]
+          key = URI(@path).path.split('/').last
+          account_id = params[:account_id]
+          access_key_id =  ENV['AWS_ACCESS_KEY_ID'] 
+          secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
+          bucket_name = ENV['BUCKET_NAME']
+          s3 = Aws::S3::Client.new(region: 'us-east-2', access_key_id: access_key_id, secret_access_key: secret_access_key)
+          resp = s3.get_object({
+          bucket: bucket_name,
+          key: key
+          })
+          result = resp.body.read
+          csv = CSV.parse(result, :headers => true)
+          csv.each do |row|
+            asset_id = ('0'..'z').to_a.sample(8).join
+            @media = Media.new(
+              asset_id: asset_id,
+              title: row[0],
+              duration: row[1],
+              file_location: row[2],
+              recorded_time: row[3],
+              account_id: account_id,
+              media_type: row[4]
+             )
+            @media.timecode = @media.duration_tc(row[1])
+            @media.save
+         end
+        else
+         render json: { status: 'ERROR', message: 'Invalid session ID', }, status: :unprocessable_entity
+        end
     end
 
       api :GET, '/accounts/:account_id/medias/','Filter media based on attributes'
@@ -242,16 +246,23 @@ module Api
      '
       def index
         offset = 0
-        medias = Media.where(account_id: params[:account_id])
-        #@artists = Artist.where("name RLIKE ?", "^#{filter_letter}")
-        medias = medias.where("asset_id RLIKE ?", "#{Regexp.escape(params[:asset_id])}") if params[:asset_id].present?
-        medias = medias.where("title RLIKE ?", "#{Regexp.escape(params[:title])}") if params[:title].present?
-        medias = medias.where(duration: -Float::INFINITY..params[:max_duration].to_i) if params[:max_duration].present?
-        medias = medias.where(duration: params[:min_duration].to_i..Float::INFINITY) if params[:min_duration].present?
-        medias = medias.order(created_at: :desc) if params[:sort].present? and params[:sort]=="True"
-        offset = params[:offset] if params[:offset].present?
-        medias = medias.limit(params[:limit]).offset(offset) if params[:limit].present?
-        render json: { status: 'SUCCESS', message: 'Loaded successfully', data: medias }, status: :ok
+        session_id = params[:session_id]
+        user = User.where(authentication_token: session_id).first
+        if (user)
+          medias = Media.where(account_id: params[:account_id])
+          #@artists = Artist.where("name RLIKE ?", "^#{filter_letter}")
+          medias = medias.where("asset_id RLIKE ?", "#{Regexp.escape(params[:asset_id])}") if params[:asset_id].present?
+          medias = medias.where("title RLIKE ?", "#{Regexp.escape(params[:title])}") if params[:title].present?
+          medias = medias.where(duration: -Float::INFINITY..params[:max_duration].to_i) if params[:max_duration].present?
+          medias = medias.where(duration: params[:min_duration].to_i..Float::INFINITY) if params[:min_duration].present?
+          medias = medias.order(created_at: :desc) if params[:sort].present? and params[:sort]=="True"
+          offset = params[:offset] if params[:offset].present?
+          medias = medias.limit(params[:limit]).offset(offset) if params[:limit].present?
+          render json: { status: 'SUCCESS', message: 'Loaded successfully', data: medias }, status: :ok
+        else
+           render json: { status: 'ERROR', message: 'Invalid session ID', }, status: :unprocessable_entity
+
+        end
       end
  
       api :DELETE, '/accounts/:account_id/medias/:id', 'Delete Media'
@@ -286,9 +297,16 @@ https://github.com/PrajnaYaji18/Audio-vedio-metadata/pull/7/commits/9851b6b681f6
      '
 
       def destroy
-        @media = Media.find_by(account_id: params[:account_id], id: params[:id])
-        @media.destroy
-        render json: { status: 'SUCCESS', message: 'Deleted successfully', data: @media }, status: :ok
+        session_id = params[:session_id]
+        user = User.where(authentication_token: session_id).first
+        if(user)
+          @media = Media.find_by(account_id: params[:account_id], id: params[:id])
+          @media.destroy
+          render json: { status: 'SUCCESS', message: 'Deleted successfully', data: @media }, status: :ok
+        else
+           render json: { status: 'ERROR', message: 'Invalid session ID', }, status: :unprocessable_entity
+
+        end
       end
 
       private
