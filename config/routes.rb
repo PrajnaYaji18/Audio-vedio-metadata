@@ -5,9 +5,12 @@ Rails.application.routes.draw do
   namespace 'api' do
     namespace 'v1' do
       get('status/:account_id' => 'medias#index')
+      resources :sessions, only: [:create, :destroy] do
       resources :accounts do
         resources :medias
       end
+    end
+      resources :users, only: [:create]
     end
   end
 end

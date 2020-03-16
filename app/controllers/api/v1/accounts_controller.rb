@@ -28,14 +28,21 @@ module Api
       # Create an account
       # Input: Email and UserName
       def create
-        @account = Account.new(account_params)
-        if @account.save
-          render json: { status: 'SUCCESS', message:
+        session_id = params[:session_id]
+        user = User.where(authentication_token: session_id).first
+        puts (user)
+        if(user)
+          @account = Account.new(account_params)
+          if @account.save
+            render json: { status: 'SUCCESS', message:
                          'Account created succesfully',
                          data: @account }, status: :ok
-        else
-          render json: { status: 'ERROR', message: 'Account not created', data:
+          else
+            render json: { status: 'ERROR', message: 'Account not created', data:
                          @account.errors }, status: :unprocessable_entity
+          end
+        else
+          render json: { status: 'ERROR', message: 'Invalid session ID', }, status: :unprocessable_entity
         end
       end
 
