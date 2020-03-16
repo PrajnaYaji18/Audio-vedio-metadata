@@ -1,24 +1,56 @@
+# frozen_string_literal: true
+
 module Api
-	module V1
-		class AccountsController < ApplicationController
+  module V1
+    class AccountsController < ApplicationController
+      resource_description do
+        short 'API for managing Accounts'
+      end
 
-# Create an account
-#Parameters: Email and UserName 
-		def create
-			@account = Account.new(account_params)
-			if @account.save
-				render json: {status: "SUCCESS", message: "Account created succesfully", data:@account},status: :ok
-			else
-				
-				render json: {status: "ERROR", message: "Account not created", data:@account.errors},status: :unprocessable_entity
-			end
-		end
+      api :POST, '/accounts', 'Create an account'
+      param :Email, String, desc: 'Email ID', required: true
+      param :UserName, String, desc: 'User Name', required: true
+      formats ['json']
+      example '
+      POST /api/v1/accounts
+      {
+      "status": "SUCCESS",
+      "message": "Account created succesfully",
+      "data": {
+        "id": 3,
+        "Email": "Prajna@amagi.com",
+        "UserName": "PrajnaYaji18",
+        "created_at": "2020-03-02T11:12:00.000Z",
+        "updated_at": "2020-03-02T11:12:00.000Z"
+    }
+}'
 
-		private
-		def account_params
-			params.permit(:Email, :UserName)
-			
-		end
-		end
-	end
+      # Create an account
+      # Input: Email and UserName
+      def create
+        session_id = params[:session_id]
+        user = User.where(authentication_token: session_id).first
+        puts (user)
+        if(user)
+          @account = Account.new(account_params)
+          if @account.save
+            render json: { status: 'SUCCESS', message:
+                         'Account created succesfully',
+                         data: @account }, status: :ok
+          else
+            render json: { status: 'ERROR', message: 'Account not created', data:
+                         @account.errors }, status: :unprocessable_entity
+          end
+        else
+          render json: { status: 'ERROR', message: 'Invalid session ID', }, status: :unprocessable_entity
+        end
+      end
+
+      private
+
+      def account_params
+        params.permit(:Email, :UserName)
+      end
+    end
+  end
 end
